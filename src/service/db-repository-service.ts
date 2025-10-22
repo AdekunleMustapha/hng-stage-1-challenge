@@ -1,4 +1,4 @@
-import { StringPropertyModel, IStringProperty } from "../models/string-property-model";
+import { StringPropertyModel } from "../models/string-property-model";
 import crypto from "crypto";
 import { stringDataType, stringPropertiesType, stringHeaderType, stringQueryFiltersType } from "../utils/types-and-enums";
 

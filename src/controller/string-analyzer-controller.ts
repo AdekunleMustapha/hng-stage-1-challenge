@@ -2,14 +2,17 @@ import { Request, Response, NextFunction } from "express";
 import { StringAnalyzer } from "../service/string-analyzer-service";
 import { DBRepositoryService } from "../service/db-repository-service";
 import { stringQueryFiltersType } from "../utils/types-and-enums";
+import { NLPService } from "../service/nlp-service";
 
 export class StringAnalyzerController {
     private stringAnalyzer: StringAnalyzer;
     private dbRepositoryService: DBRepositoryService;
+    private nlpService: NLPService;
 
     constructor(){
         this.stringAnalyzer = new StringAnalyzer();
         this.dbRepositoryService = new DBRepositoryService();
+        this.nlpService = new NLPService();
     }
 
     public async analyzeString(req: Request, res: Response, _next: NextFunction) {
@@ -49,6 +52,18 @@ export class StringAnalyzerController {
             return res.status(400).json({ error: 'Invalid query parameter values or types' });
         }
     };
+
+    public async queryStringByNLP (req: Request, res: Response, _next: NextFunction) {
+        const query = req.query.query as string;
+        if (!query || typeof query !== 'string') {
+            return res.status(400).json({ error: 'Unable to parse natural language query' });
+        }
+        const data = await this.nlpService.parseNaturalLanguageString(query);
+        if(data.status !== 200){
+            return res.status(data.status).json({ error: data.response });
+        }
+        return res.status(200).json(data.response);
+    }
 
     public async deleteStringByParams (req: Request, res: Response, _next: NextFunction) {
         const { value } = req.params;
