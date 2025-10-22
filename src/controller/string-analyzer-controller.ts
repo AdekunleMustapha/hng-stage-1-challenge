@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StringAnalyzer } from "../service/string-analyzer-service";
 import { DBRepositoryService } from "../service/db-repository-service";
-import { stringQueryFiltersType } from "../utils/types-and-enums";
+import { stringQueryFiltersSchema } from "../utils/types-and-enums";
 import { NLPService } from "../service/nlp-service";
 
 export class StringAnalyzerController {
@@ -45,7 +45,7 @@ export class StringAnalyzerController {
 
     public async getStringsFromQuery (req: Request, res: Response, _next: NextFunction) {
         try{
-            const filters: stringQueryFiltersType = req.params;
+            const filters = stringQueryFiltersSchema.parse(req.query);
             const data = await this.dbRepositoryService.getStringByQuery(filters);
             return res.status(200).json(data);   
         } catch (error) {
@@ -54,7 +54,7 @@ export class StringAnalyzerController {
     };
 
     public async queryStringByNLP (req: Request, res: Response, _next: NextFunction) {
-        const query = req.query.query as string;
+        const { query } = req.query;
         if (!query || typeof query !== 'string') {
             return res.status(400).json({ error: 'Unable to parse natural language query' });
         }
@@ -71,6 +71,6 @@ export class StringAnalyzerController {
         if (!deletionSuccess) {
             return res.status(404).json({ error: 'String does not exist in the system' });
         }
-        return res.status(204);
+        return res.sendStatus(204);
     }
 }

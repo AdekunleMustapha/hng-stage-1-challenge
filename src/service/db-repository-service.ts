@@ -29,12 +29,17 @@ export class DBRepositoryService {
     }
 
     public async getStringByQuery ( filters: stringQueryFiltersType ) {
-        const rawData = await StringPropertyModel.find({
-            is_palindrome: filters.is_palindrome ? filters.is_palindrome : undefined,
-            length: { $gte: filters.min_length || 0, $lte: filters.max_length || Infinity },
-            word_count: filters.word_count ? filters.word_count : undefined,
-            value: filters.contains_character ? { $regex: filters.contains_character } : undefined
-        });
+        const query: Record<string, any> = {};
+        if (filters.is_palindrome !== undefined) query.is_palindrome = filters.is_palindrome;
+        if (filters.word_count !== undefined) query.word_count = filters.word_count;
+        if (filters.contains_character) query.value = { $regex: filters.contains_character };
+        if (filters.min_length !== undefined || filters.max_length !== undefined) {
+            query.length = {};
+            if (filters.min_length !== undefined) query.length.$gte = filters.min_length;
+            if (filters.max_length !== undefined) query.length.$lte = filters.max_length;
+        }
+
+        const rawData = await StringPropertyModel.find(query);
 
         const stringPropertyData: stringPropertiesType[] = rawData;
         const stringHeaderData: stringHeaderType[] = rawData;
