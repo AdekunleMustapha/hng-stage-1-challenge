@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(mainRoute);
 
 connectToDatabase().then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`Server is running on port ${PORT}`);
     });
 }).catch((error) => {
