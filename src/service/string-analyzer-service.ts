@@ -44,7 +44,7 @@ export class StringAnalyzer {
             word_count: this.wordCount(value),
             value,
             sha256_hash: this.stringEncryption(value),
-            character_frequency: this.characterFrequency(value)
+            character_frequency_map: this.characterFrequency(value)
         });
         await newStringValue.save();
 
@@ -59,7 +59,7 @@ export class StringAnalyzer {
                 sha256_hash: this.stringEncryption(value),
                 character_frequency_map: this.characterFrequency(value)
             },
-            created_at: newStringValue.createdAt.toISOString()
+            created_at: newStringValue.created_at.toISOString()
         };
     }
 }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { StringAnalyzerController } from "../controller/string-analyzer";
+import { StringAnalyzerController } from "../controller/string-analyzer-controller";
 
 const mainRoute = Router();
 const stringAnalyzerController = new StringAnalyzerController();

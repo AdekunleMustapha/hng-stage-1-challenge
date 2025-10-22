@@ -7,8 +7,8 @@ export interface IStringProperty extends Document {
     word_count: number;
     value: string;
     sha256_hash: string;
-    character_frequency: Record<string, number>;
-    createdAt: Date;
+    character_frequency_map: Record<string, number>;
+    created_at: Date;
 }
 
 const StringPropertySchema: Schema = new Schema<IStringProperty>({
@@ -18,8 +18,8 @@ const StringPropertySchema: Schema = new Schema<IStringProperty>({
     word_count: { type: Number, required: true },
     value: { type: String, required: true },
     sha256_hash: { type: String, required: true },
-    character_frequency: { type: Map, of: Number, required: true },
-    createdAt: { type: Date, default: Date.now}
+    character_frequency_map: { type: Map, of: Number, required: true },
+    created_at: { type: Date, default: Date.now}
 }, { versionKey: false });
 
 export const StringPropertyModel = model<IStringProperty>('StringProperty', StringPropertySchema);

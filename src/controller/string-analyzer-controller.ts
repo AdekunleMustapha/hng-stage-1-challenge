@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { StringAnalyzer } from "../service/string-analyzer";
+import { StringAnalyzer } from "../service/string-analyzer-service";
 import { DBRepositoryService } from "../service/db-repository-service";
+import { stringQueryFiltersType } from "../utils/types-and-enums";
 
 export class StringAnalyzerController {
     private stringAnalyzer: StringAnalyzer;
@@ -37,5 +38,24 @@ export class StringAnalyzerController {
             return res.status(404).json({ error: 'String does not exist in the system' });
         }
         return res.status(200).json(data);
+    }
+
+    public async getStringsFromQuery (req: Request, res: Response, _next: NextFunction) {
+        try{
+            const filters: stringQueryFiltersType = req.params;
+            const data = await this.dbRepositoryService.getStringByQuery(filters);
+            return res.status(200).json(data);   
+        } catch (error) {
+            return res.status(400).json({ error: 'Invalid query parameter values or types' });
+        }
+    };
+
+    public async deleteStringByParams (req: Request, res: Response, _next: NextFunction) {
+        const { value } = req.params;
+        const deletionSuccess = await this.dbRepositoryService.deleteStringByString(value);
+        if (!deletionSuccess) {
+            return res.status(404).json({ error: 'String does not exist in the system' });
+        }
+        return res.status(204);
     }
 }
